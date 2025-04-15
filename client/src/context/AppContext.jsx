@@ -7,7 +7,7 @@ export const AppContext = createContext(); //Create context using createContext(
 
 export const AppContextProvider = ({ children }) => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(true);
+  const [user, setUser] = useState(null);
   const currency = import.meta.VITE_CURRENCY;
   const [isSeller, setIsSeller] = useState(false);
   const [products, setProducts] = useState([]);
@@ -20,7 +20,7 @@ export const AppContextProvider = ({ children }) => {
     fetchProducts();
   }, []);
 
-  const addToCart = () => {
+  const addToCart = (itemId) => {
     let cartData = structuredClone(cartItems);
     if (cartData[itemId]) {
       cartData[itemId] += 1;
@@ -28,7 +28,7 @@ export const AppContextProvider = ({ children }) => {
       cartData[itemId] = 1;
     }
     setCartItems(cartData);
-    toast.success("Add to Cart");
+    toast.success("Added to Cart");
   };
 
   const updateCardItem = (itemId, quantity) => {
@@ -53,6 +53,7 @@ export const AppContextProvider = ({ children }) => {
     navigate,
     user,
     currency,
+    setUser,
     isSeller,
     showUserLogin,
     cartItems,

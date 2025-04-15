@@ -8,6 +8,7 @@ const Navbar = () => {
   const { user, setUser, setShowUserLogin, navigate } = useAppContext();
 
   const logout = async () => {
+    console.log("op");
     setUser(null);
     navigate("/");
   };
@@ -69,12 +70,6 @@ const Navbar = () => {
                 Logout
               </li>
             </ul>
-            {/* <button
-              onClick={logout}
-              className="cursor-pointer px-8 py-2 bg-primary hover:bg-primary-dull transition text-white rounded-full"
-            >
-              Logout
-            </button> */}
           </div>
         )}
       </div>
