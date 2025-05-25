@@ -8,7 +8,7 @@ export const AppContext = createContext(); //Create context using createContext(
 export const AppContextProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const currency = import.meta.VITE_CURRENCY;
+  const currency = import.meta.env.VITE_CURRENCY;
   const [isSeller, setIsSeller] = useState(false);
   const [products, setProducts] = useState([]);
   const [showUserLogin, setShowUserLogin] = useState(false);
@@ -32,7 +32,7 @@ export const AppContextProvider = ({ children }) => {
     toast.success("Added to Cart");
   };
 
-  const updateCardItem = (itemId, quantity) => {
+  const updateCartItem = (itemId, quantity) => {
     let cartData = structuredClone(cartItems);
     cartData[itemId] = quantity;
     setCartItems(cartData);
@@ -50,16 +50,36 @@ export const AppContextProvider = ({ children }) => {
     toast.success("Removed from cart");
     setCartItems(cartData);
   };
+  const getCartCount = () => {
+    let totalCount = 0;
+    for (const item in cartItems) {
+      totalCount += cartItems[item];
+    }
+    return totalCount;
+  };
+  const getCartAmount = () => {
+    let totalAmount = 0;
+    for (const items in cartItems) {
+      let itemInfo = products.find((product) => product._id === items);
+      if (cartItems[items] > 0) {
+        totalAmount += itemInfo.offerPrice * cartItems[items];
+      }
+    }
+    return Math.floor(totalAmount * 100) / 100;
+  };
   const value = {
     navigate,
     user,
     currency,
     setUser,
     isSeller,
+    setIsSeller,
     showUserLogin,
     cartItems,
+    getCartAmount,
+    getCartCount,
     addToCart,
-    updateCardItem,
+    updateCartItem,
     removeFromCart,
     searchQuery,
     setSearchQuery,
