@@ -20,7 +20,6 @@ import Orders from "./pages/seller/Orders";
 const App = () => {
   const isSellerPath = useLocation().pathname.includes("seller");
   const { showUserLogin, isSeller } = useAppContext();
-  console.log(isSellerPath, "OP");
   return (
     <div className="text-default min-h-screen min-w-screen text-gray-700  ">
       <Toaster />

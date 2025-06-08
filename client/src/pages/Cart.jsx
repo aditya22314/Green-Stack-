@@ -84,7 +84,6 @@ const Cart = () => {
                     <p>Qty:</p>
                     <select
                       onChange={(e) => {
-                        console.log(product._id, e.target.value, "pj");
                         updateCartItem(product._id, Number(e.target.value));
                       }}
                       className="outline-none"

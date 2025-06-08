@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { assets, categories } from "../../assets/assets";
+import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 
 const AddProduct = () => {
   const [files, setFiles] = useState([]);
@@ -8,9 +10,39 @@ const AddProduct = () => {
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState("");
   const [offerPrice, setOfferPrice] = useState("");
-
+  const { axios, fetchProducts } = useAppContext();
   const onSubmitHandler = async (event) => {
-    event.preventDefault();
+    try {
+      event.preventDefault();
+      console.log(offerPrice, "00");
+      const productData = {
+        name,
+        description: description.split(`\n`),
+        category,
+        price,
+        offerPrice,
+      };
+      const formData = new FormData();
+      formData.append("productData", JSON.stringify(productData));
+      for (let i = 0; i < files.length; i++) {
+        formData.append("images", files[i]);
+      }
+      const { data } = await axios.post("/api/product/add", formData);
+      if (data.success) {
+        toast.success(data.message);
+        setName("");
+        setDescription("");
+        setCategory("");
+        setPrice("");
+        setOfferPrice("");
+        setFiles([]);
+        fetchProducts();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
   return (
     <div className="no-scrollbar flex-1 h-[95vh] overflow-y-scroll flex flex-col justify-between">
@@ -115,7 +147,6 @@ const AddProduct = () => {
           <div className="flex-1 flex flex-col gap-1 w-32">
             <label
               className="text-base font-medium"
-              onChange={(e) => setOfferPrice(e.target.value)}
               value={offerPrice}
               htmlFor="offer-price"
             >
@@ -125,6 +156,7 @@ const AddProduct = () => {
               id="offer-price"
               type="number"
               placeholder="0"
+              onChange={(e) => setOfferPrice(e.target.value)}
               className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
               required
             />

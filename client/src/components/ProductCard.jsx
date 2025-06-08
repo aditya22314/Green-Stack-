@@ -6,7 +6,6 @@ const ProductCard = ({ product }) => {
   const [count, setCount] = useState(0);
   const { currency, addToCart, removeFromCart, cartItems, navigate } =
     useAppContext();
-
   return (
     product && (
       <div
@@ -51,7 +50,8 @@ const ProductCard = ({ product }) => {
               </span>
             </p>
             <div onClick={(e) => e.stopPropagation()} className="text-primary">
-              {!cartItems[product._id] ? (
+              {console.log(product, "88")}
+              {!cartItems[product?._id] ? (
                 <button
                   className="flex items-center justify-center gap-1 bg-primary/10 border border-primary md:w-[80px] w-[64px] h-[34px] rounded text-primary font-medium cursor-pointer"
                   onClick={() => addToCart(product._id)}

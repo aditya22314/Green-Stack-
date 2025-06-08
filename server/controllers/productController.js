@@ -30,7 +30,7 @@ export const addProduct = async (req, res) => {
 //List` Product: /api/product/add
 export const productList = async (req, res) => {
   try {
-    const products = Product.find({}); //Empty object so that all items are fetched
+    const products = await Product.find({}); //Empty object so that all items are fetched
     res.json({ success: true, products });
   } catch (error) {
     console.log(error);

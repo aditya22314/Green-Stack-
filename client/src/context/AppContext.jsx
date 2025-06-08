@@ -1,7 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { dummyProducts } from "../assets/assets";
+
 import toast from "react-hot-toast";
+
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 
 export const AppContext = createContext(); //Create context using createContext() method from react
 
@@ -15,10 +20,52 @@ export const AppContextProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState({});
   const [searchQuery, setSearchQuery] = useState({});
   const fetchProducts = async () => {
-    setProducts(dummyProducts);
+    // setProducts(dummyProducts);
+    try {
+      const { data } = await axios.get("/api/product/list");
+      console.log(data, "8");
+      if (data.success) {
+        setProducts(data.products);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
+
+  const fetchSeller = async () => {
+    try {
+      const { data } = await axios.get("/api/seller/is-auth");
+      if (data.success) {
+        setIsSeller(true);
+      } else {
+        setIsSeller(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setIsSeller(false);
+    }
+  };
+  const fetchUser = async () => {
+    try {
+      const { data } = await axios.get("/api/user/is-auth");
+      console.log(data.user, "99");
+
+      if (data.success) {
+        setUser(data.user);
+        setCartItems(data.user.cartItems);
+      }
+    } catch (error) {
+      console.error(error);
+      setUser(null);
+    }
+  };
+
   useEffect(() => {
+    fetchUser();
     fetchProducts();
+    fetchSeller();
   }, []);
 
   const addToCart = (itemId) => {
@@ -78,6 +125,7 @@ export const AppContextProvider = ({ children }) => {
     cartItems,
     getCartAmount,
     getCartCount,
+    fetchProducts,
     addToCart,
     updateCartItem,
     removeFromCart,
@@ -85,6 +133,7 @@ export const AppContextProvider = ({ children }) => {
     setSearchQuery,
     setShowUserLogin,
     products,
+    axios,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
