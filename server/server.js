@@ -19,7 +19,10 @@ await connectDb();
 await connectCloudinary();
 const port = process.env.port || 4000;
 //Middleware boi its like from frontend if we send some form data or body its header is in the form of ContentType: application/json so the backend need to parse it and know that its in the form of application/json
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://green-stack-opal.vercel.app",
+];
 app.post(
   "/api/stripe/webhook",
   express.raw({ type: "application/json" }),
