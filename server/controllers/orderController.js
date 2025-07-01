@@ -42,7 +42,8 @@ export const placeOrderCod = async (req, res) => {
 
 export const placeOrderStripe = async (req, res) => {
   try {
-    const { userId, items, address } = req.body;
+    const { items, address } = req.body;
+    const userId = req.userId;
     const { origin } = req.headers;
     if (!address || items.length === 0) {
       return res.json({ succss: false, message: "Invalid data" });
@@ -125,7 +126,6 @@ export const stripeWebhook = async (req, res) => {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // ✅ Handle checkout session completion
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
 
@@ -133,10 +133,8 @@ export const stripeWebhook = async (req, res) => {
       const orderId = session.metadata.orderId;
       const userId = session.metadata.userId;
 
-      // ✅ Mark the order as paid
       await Order.findByIdAndUpdate(orderId, { isPaid: true, status: "Paid" });
 
-      // ✅ Optionally clear the user's cart
       await User.findByIdAndUpdate(userId, { cartItems: {} });
 
       console.log(`✅ Order ${orderId} marked as paid successfully.`);
